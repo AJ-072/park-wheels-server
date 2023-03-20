@@ -1,0 +1,5 @@
+/env
+*.env
+__pycahce__
+*.pyc
+db.sqlite3
