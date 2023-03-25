@@ -4,9 +4,10 @@ from webapp.models import ParkingLot
 from rest_framework.request import Request
 from rest_framework.response import Response
 from api.serializers.parking_lot_serializer import ParkingLotSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
+from rest_framework.permissions import IsAuthenticated
 
 
 @api_view(['GET'])

@@ -8,7 +8,7 @@ POSITION_SCHEME = {'properties': {
 
 class Slot(models.Model):
     lot = models.ForeignKey("ParkingLot", on_delete=models.CASCADE)
-    name = models.CharField(max_length=10,null=False)
+    name = models.CharField(max_length=10, null=False)
     position = models.JSONField()
 
     def __str__(self):
