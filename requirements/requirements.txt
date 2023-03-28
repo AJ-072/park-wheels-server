@@ -4,3 +4,6 @@ psycopg2==2.9.5
 Django==4.1.7
 pyjwt==2.6.0
 djangorestframework-gis==1.0
+django-environ==0.10.0
+drf-nested-routers==0.93.4
+celery==5.2.7
