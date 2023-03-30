@@ -1,5 +1,3 @@
-import rest_framework.request
-
 from webapp.models import ParkingLot
 from rest_framework.request import Request
 from rest_framework.response import Response
