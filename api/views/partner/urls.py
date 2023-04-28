@@ -1,7 +1,7 @@
-from rest_framework.routers import DefaultRouter
-from . import BookingView
+from rest_framework_nested.routers import DefaultRouter, NestedSimpleRouter
+from . import BookingView, PartnerViewSet
 
-router = DefaultRouter()
-router.register(r'bookings', BookingView, basename="Bookings")
+partner_router = DefaultRouter()
+partner_router.register(r'bookings', BookingView, basename="Bookings")
 
-urlpatterns = router.urls
+urlpatterns = partner_router.urls

@@ -9,6 +9,11 @@ class LoginCredentialSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    confirm = serializers.CharField(required=True, write_only=True, validators=[validate_password])
+    new = serializers.CharField(required=True, write_only=True, validators=[validate_password])
+
+
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.CharField(required=True, validators=[UniqueValidator(queryset=User.objects.all())])
     phone = serializers.CharField(required=True, validators=[UniqueValidator(queryset=User.objects.all())])
@@ -34,12 +39,19 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            phone=validated_data['phone'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            password=validated_data['password']
+            username=self.validated_data['username'],
+            email=self.validated_data['email'],
+            phone=self.validated_data['phone'],
+            first_name=self.validated_data['first_name'],
+            last_name=self.validated_data['last_name'],
+            password=self.validated_data['password']
         )
         user.save()
         return user
+
+    def update(self, instance, validated_data):
+        validated_data.pop('password', None)
+        for (key, value) in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+        return instance

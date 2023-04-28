@@ -1,6 +1,8 @@
+from datetime import datetime, timedelta
+
+import pytz
 from django.db import models
 from webapp.config import BookingStatus
-from datetime import timedelta
 
 
 class Booking(models.Model):
@@ -11,7 +13,7 @@ class Booking(models.Model):
     booked_time = models.DateTimeField(null=False)
     take_away_time = models.DateTimeField(null=True)
     status = models.CharField(choices=BookingStatus.choices(), default=BookingStatus.WAITING, max_length=10)
-    duration = models.IntegerField(default=1, null=False)
+    duration = models.DurationField(default=timedelta(hours=1), null=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user")
     created_by = models.ForeignKey("User", on_delete=models.CASCADE, related_name="created_by")
     created_at = models.DateTimeField(auto_now_add=True, auto_created=True)
@@ -19,3 +21,13 @@ class Booking(models.Model):
 
     def __str__(self):
         return str(self.cost)
+
+    @property
+    def is_expired(self):
+        print(self.created_at + self.timeout)
+        print(datetime.now(pytz.UTC))
+        return self.created_at + self.timeout < (datetime.now(pytz.UTC))
+
+    @property
+    def end_date_time(self):
+        return self.booked_time + self.duration

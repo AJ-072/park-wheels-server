@@ -1,4 +1,5 @@
 from enum import Enum
+from datetime import datetime, timedelta
 
 
 class UserType(Enum):
@@ -37,7 +38,6 @@ class BookingStatus(Enum):
 
 
 class SlotStatus(Enum):
-    WAITING = "WAITING"
     RESERVED = "RESERVED"
     AVAILABLE = "AVAILABLE"
 
@@ -49,13 +49,15 @@ class SlotStatus(Enum):
 
 def get_slot_status(booking_status: BookingStatus):
     switcher = {
-        BookingStatus.WAITING: SlotStatus.WAITING,
-        BookingStatus.BOOKED: SlotStatus.RESERVED,
-        BookingStatus.PARKED: SlotStatus.RESERVED,
-        BookingStatus.COMPLETED: SlotStatus.AVAILABLE,
-        BookingStatus.CANCELLED: SlotStatus.AVAILABLE,
+        BookingStatus.WAITING.value: SlotStatus.RESERVED,
+        BookingStatus.BOOKED.value: SlotStatus.RESERVED,
+        BookingStatus.PARKED.value: SlotStatus.RESERVED,
+        BookingStatus.COMPLETED.value: SlotStatus.AVAILABLE,
+        BookingStatus.CANCELLED.value: SlotStatus.AVAILABLE,
     }
     return switcher.get(booking_status, SlotStatus.AVAILABLE)
 
 
-
+def get_deltatime(value: str):
+    t = datetime.strptime(value, "%H:%M:%S")
+    return timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)

@@ -1,6 +1,9 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import Group
+from api.decorator import custom_serializer
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
@@ -12,49 +15,47 @@ from rest_framework.request import Request
 
 from api.serializers.user_serializer import UserSerializer, LoginCredentialSerializer
 from api.authentication import token_expire_handler, expires_in
+from webapp.models import User
 
 
-@api_view(["POST"])
-@permission_classes((AllowAny,))
-def signin(request, user_type=None):
-    credential_serializer = LoginCredentialSerializer(data=request.data)
-    if not credential_serializer.is_valid():
-        return Response(credential_serializer.errors, status=HTTP_400_BAD_REQUEST)
-    user_info = authenticate(
-        username=credential_serializer.data['username'],
-        password=credential_serializer.data['password']
-    )
-    if not user_info:
-        return Response({'message': 'Invalid Credentials'}, status=HTTP_404_NOT_FOUND)
+class AuthViewSet(GenericViewSet):
+    permission_classes = [AllowAny]
 
-    # TOKEN STUFF
-    token, _ = Token.objects.get_or_create(user=user_info)
+    @action(["POST"], detail=False)
+    @custom_serializer(serializer_class=LoginCredentialSerializer)
+    def signin(self, request, serializer, user_type=None):
+        user_info: User = authenticate(
+            username=serializer.data['username'],
+            password=serializer.data['password']
+        )
+        if user_info is not None:
+            if not user_info.groups.filter(name=user_type).exists():
+                return Response(status=403)
+        else:
+            return Response({'message': 'Invalid Credentials'}, status=HTTP_404_NOT_FOUND)
 
-    # is_expired, token = token_expire_handler(token)  # The implementation will be described further
-    user_serialized = UserSerializer(user_info)
-    return Response({
-        'user': user_serialized.data,
-        'expires_in': expires_in(token),
-        'token': token.key
-    }, status=HTTP_200_OK)
+        token, _ = Token.objects.get_or_create(user=user_info)
 
+        user_serialized = UserSerializer(user_info)
+        return Response({
+            'user': user_serialized.data,
+            'expires_in': expires_in(token),
+            'token': token.key
+        })
 
-@api_view(["POST"])
-@permission_classes((AllowAny,))
-def signup(request, user_type=None):
-    signup_serializer = UserSerializer(data=request.data)
-    if not signup_serializer.is_valid():
-        return Response(signup_serializer.errors, status=HTTP_400_BAD_REQUEST)
-    user_info = signup_serializer.create(signup_serializer.validated_data)
+    @action(["POST"], detail=False)
+    @custom_serializer(serializer_class=UserSerializer)
+    def signup(self, request, serializer, user_type=None):
+        user_info = serializer.create(serializer.validated_data)
+        group = Group.objects.get(name=user_type)
+        user_info.groups.add(group)
 
-    # TOKEN STUFF
-    token, _ = Token.objects.get_or_create(user=user_info)
+        token, _ = Token.objects.get_or_create(user=user_info)
 
-    # is_expired, token = token_expire_handler(token)  # The implementation will be described further
-    user_serialized = UserSerializer(user_info)
+        user_serialized = UserSerializer(user_info)
 
-    return Response({
-        'user': user_serialized.data,
-        'expires_in': expires_in(token),
-        'token': token.key
-    }, status=HTTP_201_CREATED)
+        return Response({
+            'user': user_serialized.data,
+            'expires_in': expires_in(token),
+            'token': token.key
+        }, status=HTTP_201_CREATED)

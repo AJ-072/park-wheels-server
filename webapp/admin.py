@@ -21,7 +21,7 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(ParkingLot)
 class ParkingLotAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address', 'status', 'created_by')
+    list_display = ('name', 'address', 'status', 'owner')
 
 
 @admin.register(Slot)

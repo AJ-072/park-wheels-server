@@ -10,7 +10,7 @@ def validate_field(values: list, field_name: str = 'status', ):
             field_value = getattr(instance, field_name)
             if field_value in values:
                 return func(self, request, *args, **kwargs)
-            raise MethodNotAllowed
+            raise MethodNotAllowed(method=request.method)
 
         return wrapper
 
