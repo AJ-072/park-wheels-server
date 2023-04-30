@@ -10,3 +10,5 @@ class ParkingLotViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(owner_id=self.request.user.pk)
+
+

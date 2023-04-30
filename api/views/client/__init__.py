@@ -4,3 +4,4 @@ from .history_viewset import HistoryViewSet
 from .booking_viewset import BookingViewSet
 from .slot_view_set import SlotViewSet
 from .client_view_set import ClientViewSet
+from .notifications_viewset import NotificationsViewSet
