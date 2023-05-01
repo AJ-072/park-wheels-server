@@ -9,4 +9,4 @@ partner_router.register(r'notifications', NotificationsViewSet, basename="Histor
 parking_lot_router = NestedDefaultRouter(partner_router, r'lots', lookup="parking_lot")
 parking_lot_router.register(r'book', BookViewSet, basename="Book")
 parking_lot_router.register(r'slots', SlotViewSet, basename="slots")
-urlpatterns = partner_router.urls
+urlpatterns = partner_router.urls + parking_lot_router.urls

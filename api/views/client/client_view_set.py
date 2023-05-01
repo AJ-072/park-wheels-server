@@ -4,6 +4,7 @@ from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin, RetrieveM
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.parsers import MultiPartParser,FormParser
 
 from ...decorator import custom_serializer
 from ...permissions import IsClient
@@ -13,6 +14,7 @@ from ...serializers import UserSerializer, ChangePasswordSerializer
 class ClientViewSet(GenericViewSet, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin):
     permission_classes = [IsClient, IsAuthenticated]
     serializer_class = UserSerializer
+    parser_classes = (MultiPartParser,FormParser)
 
     def get_queryset(self):
         return self.request.user
