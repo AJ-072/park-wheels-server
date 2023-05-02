@@ -1,4 +1,4 @@
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes as permission
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -32,7 +32,7 @@ class SlotViewSet(ReadOnlyModelViewSet):
         })
 
     @action("POST", url_path='add-slots', detail=True)
-    @permission_classes([AllowAny])
+    @permission([AllowAny])
     def addSlot(self):
         slotSerializer = SlotSerializer(self.request.data, many=True)
         slotSerializer.is_valid(raise_exception=True)
