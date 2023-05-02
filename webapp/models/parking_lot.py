@@ -8,7 +8,7 @@ class ParkingLot(models.Model):
     name = models.CharField(max_length=40, null=False)
     address = models.CharField(max_length=200, null=False)
     location = models.PointField(geography=True, default=Point(0.0, 0.0))
-    description = models.TextField(blank=True, default='')
+    description = models.TextField(blank=True, default='', null=True)
     rate_per_hour = models.DecimalField(max_digits=5, decimal_places=2, null=False)
     status = models.CharField(choices=ParkingLotStatus.choices(), default=ParkingLotStatus.PENDING, max_length=10)
     owner = models.ForeignKey("User", on_delete=models.CASCADE)

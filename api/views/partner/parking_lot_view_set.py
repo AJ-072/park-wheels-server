@@ -26,5 +26,5 @@ class ParkingLotViewSet(ReadOnlyModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return Response({
-            'result': self.serializer_class(self.get_queryset(),many=True).data
+            'result': self.serializer_class(self.get_queryset(), many=True).data
         })
