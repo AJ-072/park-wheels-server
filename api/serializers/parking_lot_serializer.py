@@ -8,6 +8,7 @@ class ParkingLotSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParkingLot
         fields = "__all__"
+        geo_field = 'location'
 
     def create(self, validated_data):
         return ParkingLot.objects.create(
