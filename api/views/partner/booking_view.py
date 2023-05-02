@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 
 from api.authentication import BearerTokenAuthentication
 from webapp.models import Booking
-from api.serializers import BookingSerializer
+from api.serializers import BookingSerializer, ListBookingSerializer
 
 
 class BookingView(ModelViewSet):
