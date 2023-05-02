@@ -7,4 +7,4 @@ class LocationSerializer(serializers.Serializer):
     long = serializers.FloatField(required=True)
 
     def point(self):
-        return Point(self.data['long'], self.data['long'])
+        return Point(self.data['lat'], self.data['long'])
