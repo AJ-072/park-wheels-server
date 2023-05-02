@@ -21,8 +21,12 @@ class ParkingLotViewSet(ModelViewSet):
         serializer = self.serializer_class(data=request.data)
         # serializer.initial_data['owner_id'] = request.user.pk
         serializer.is_valid(raise_exception=True)
-        serializer.save(owner=request.user)
         return Response(serializer.data)
+
+    def get_serializer_context(self):
+        context = super(ParkingLotViewSet, self).get_serializer_context()
+        context.update({"owner":self.request.user})
+        return context
 
     def list(self, request, *args, **kwargs):
         return Response({
