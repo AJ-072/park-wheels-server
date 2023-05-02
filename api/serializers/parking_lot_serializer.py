@@ -6,3 +6,4 @@ class ParkingLotSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParkingLot
         fields = "__all__"
+
