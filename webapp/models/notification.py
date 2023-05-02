@@ -9,4 +9,4 @@ class Notifications(models.Model):
     updated_at = models.DateTimeField(auto_now=True, auto_created=True)
 
     def __str__(self):
-        return self.name
+        return self.message
