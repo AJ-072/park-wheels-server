@@ -1,5 +1,6 @@
 import datetime
 
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import QuerySet
 from webapp.models import Booking, ParkingLot, Slot
@@ -9,9 +10,13 @@ from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
+
+from ...authentication import BearerTokenAuthentication
 from ...decorator import validate_field, not_none_field, custom_serializer
 
 class BookViewSet(ModelViewSet):
+    authentication_classes = [BearerTokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset: QuerySet = Booking.objects.all()
     serializer_class = BookingSerializer
 

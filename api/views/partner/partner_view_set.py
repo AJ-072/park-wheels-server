@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin
 
+from ...authentication import BearerTokenAuthentication
 from ...decorator import custom_serializer
 from ...permissions import IsPartner
 from rest_framework.permissions import IsAuthenticated
@@ -11,7 +12,8 @@ from api.serializers import UserSerializer, ChangePasswordSerializer
 
 
 class PartnerViewSet(GenericViewSet, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin):
-    permission_classes = [IsPartner, IsAuthenticated]
+    authentication_classes = [BearerTokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
     def get_queryset(self):

@@ -1,3 +1,6 @@
+from rest_framework.permissions import IsAuthenticated
+
+from api.authentication import BearerTokenAuthentication
 from webapp.models import ParkingLot
 from rest_framework.response import Response
 from api.serializers import ParkingLotSerializer, LocationSerializer
@@ -7,6 +10,9 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 
 class ParkingLotViewSet(ReadOnlyModelViewSet):
+    authentication_classes = [BearerTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     queryset = ParkingLot.objects.all()
     serializer_class = ParkingLotSerializer
 

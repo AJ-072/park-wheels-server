@@ -1,29 +1,34 @@
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.parsers import MultiPartParser,FormParser
+from rest_framework.parsers import MultiPartParser, FormParser
 
+from ...authentication import BearerTokenAuthentication
 from ...decorator import custom_serializer
 from ...permissions import IsClient
 from ...serializers import UserSerializer, ChangePasswordSerializer
 
 
 class ClientViewSet(GenericViewSet, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin):
-    permission_classes = [IsClient, IsAuthenticated]
+    authentication_classes = [BearerTokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
-    parser_classes = (MultiPartParser,FormParser)
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         return self.request.user
 
-    def retrieve(self, request, *args, **kwargs):
+    @action('GET', detail=False)
+    def user(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def update(self, request, *args, **kwargs):
+    @action('PUT', url_path='update', detail=False)
+    def updateUser(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

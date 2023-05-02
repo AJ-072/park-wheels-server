@@ -8,7 +8,7 @@ client_router.register(r'parking-lots', ParkingLotViewSet, basename="parking lot
 client_router.register(r'booking', BookingViewSet, basename="Bookings")
 client_router.register(r'history', HistoryViewSet, basename="History")
 client_router.register(r'notifications', NotificationsViewSet, basename="History")
-client_router.register(r'', ClientViewSet, basename="client")
+client_router.register(r'user', ClientViewSet, basename="client")
 parking_lot_router = routers.NestedDefaultRouter(client_router, r'parking-lots', lookup="parking_lot")
 parking_lot_router.register(r'book', BookViewSet, basename="Book")
 parking_lot_router.register(r'slots', SlotViewSet, basename="slots")

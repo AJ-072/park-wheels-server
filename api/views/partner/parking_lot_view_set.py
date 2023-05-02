@@ -1,12 +1,16 @@
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from api.authentication import BearerTokenAuthentication
 from api.serializers import ParkingLotSerializer
 from webapp.models import ParkingLot
 
 
 class ParkingLotViewSet(ReadOnlyModelViewSet):
+    authentication_classes = [BearerTokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = ParkingLot.objects.all()
     serializer_class = ParkingLotSerializer
 
