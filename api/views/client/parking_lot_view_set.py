@@ -18,8 +18,8 @@ class ParkingLotViewSet(ReadOnlyModelViewSet):
     queryset = ParkingLot.objects.all()
     serializer_class = ParkingLotSerializer
 
-    def get_queryset(self):
-        return self.queryset.filter(status__in=[ParkingLotStatus.ACTIVE.value])
+    # def get_queryset(self):
+    #     return self.queryset.filter(status__in=[ParkingLotStatus.ACTIVE.value])
 
     def list(self, request, *args, **kwargs):
         location_serializer = LocationSerializer(data=request.query_params)
