@@ -19,5 +19,5 @@ class NotificationsViewSet(ReadOnlyModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return Response({
-            'result': self.get_queryset()
+            'result': self.serializer_class(self.get_queryset(),many=True).data
         })
