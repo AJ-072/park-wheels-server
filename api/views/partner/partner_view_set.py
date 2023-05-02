@@ -8,7 +8,7 @@ from ...authentication import BearerTokenAuthentication
 from ...decorator import custom_serializer
 from ...permissions import IsPartner
 from rest_framework.permissions import IsAuthenticated
-from api.serializers import UserSerializer, ChangePasswordSerializer
+from api.serializers import UserSerializer, ChangePasswordSerializer, ParkingLotSerializer
 
 
 class PartnerViewSet(GenericViewSet, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin):
@@ -29,6 +29,12 @@ class PartnerViewSet(GenericViewSet, UpdateModelMixin, RetrieveModelMixin, Destr
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=['POST'], url_path='add-lot', detail=False)
+    @custom_serializer(serializer_class=ParkingLotSerializer)
+    def createLot(self, request, serializer,*args, **kwargs):
+        serializer.save()
+        return Response(serializer.data)
 
     @action(methods=['put'], url_path='update-password', detail=False)
     @custom_serializer(serializer_class=ChangePasswordSerializer)

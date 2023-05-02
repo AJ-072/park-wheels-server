@@ -1,14 +1,14 @@
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 
 from api.authentication import BearerTokenAuthentication
 from api.serializers import ParkingLotSerializer
 from webapp.models import ParkingLot
 
 
-class ParkingLotViewSet(ReadOnlyModelViewSet):
+class ParkingLotViewSet(ModelViewSet):
     authentication_classes = [BearerTokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = ParkingLot.objects.all()
@@ -17,8 +17,7 @@ class ParkingLotViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         return self.queryset.filter(owner_id=self.request.user.pk)
 
-    @action('POST', url_path='create', detail=False)
-    def createLot(self):
+    def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(self.request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
