@@ -11,7 +11,7 @@ class Booking(models.Model):
     slot = models.ForeignKey("Slot", on_delete=models.CASCADE, null=True)
     timeout = models.DurationField(default=timedelta(minutes=5))
     booked_time = models.DateTimeField(null=False)
-    arrived_time = models.DateTimeField(null=True, blank=True)
+    arrived_time = models.DateTimeField()
     take_away_time = models.DateTimeField(null=True,blank=True)
     status = models.CharField(choices=BookingStatus.choices(), default=BookingStatus.WAITING, max_length=10)
     duration = models.DurationField(default=timedelta(hours=1), null=False)
