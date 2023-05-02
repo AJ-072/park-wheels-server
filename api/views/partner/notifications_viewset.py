@@ -15,7 +15,7 @@ class NotificationsViewSet(ReadOnlyModelViewSet):
     serializer_class = ParkingLotSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(owner_id=self.request.user.pk)
+        return self.queryset.filter(user_id=self.request.user.pk)
 
     def list(self, request, *args, **kwargs):
         return Response({
