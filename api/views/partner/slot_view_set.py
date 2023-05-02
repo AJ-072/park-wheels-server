@@ -32,7 +32,7 @@ class SlotViewSet(ReadOnlyModelViewSet):
         })
 
     @action("POST", url_path='add-slots', detail=True)
-    @permission_classes(AllowAny)
+    @permission_classes([AllowAny])
     def addSlot(self):
         slotSerializer = SlotSerializer(self.request.data, many=True)
         slotSerializer.is_valid(raise_exception=True)
