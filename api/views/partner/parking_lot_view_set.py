@@ -18,8 +18,7 @@ class ParkingLotViewSet(ModelViewSet):
         return self.queryset.filter(owner_id=self.request.user.pk)
 
     def create(self, request, *args, **kwargs):
-        data = self.request.data;
-        serializer = self.serializer_class(data= data)
+        serializer = self.serializer_class(data=request.data + request.user)
         # serializer.initial_data['owner_id'] = request.user.pk
         serializer.is_valid(raise_exception=True)
         serializer.save()
