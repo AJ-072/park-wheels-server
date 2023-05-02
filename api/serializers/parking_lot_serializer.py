@@ -1,8 +1,9 @@
 from rest_framework import serializers
+from rest_framework_gis.serializers import GeoModelSerializer
 from webapp.models.parking_lot import ParkingLot
 
 
-class ParkingLotSerializer(serializers.ModelSerializer):
+class ParkingLotSerializer(GeoModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:

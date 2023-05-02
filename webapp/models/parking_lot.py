@@ -7,7 +7,7 @@ class ParkingLot(models.Model):
     image = models.ImageField(upload_to='lot_images', blank=True, null=True)
     name = models.CharField(max_length=40, null=False)
     address = models.CharField(max_length=200, null=False)
-    location = models.PointField(geography=True, default=Point(0.0, 0.0))
+    location = models.PointField(geography=True, default=Point(0.0, 0.0), srid=4326)
     description = models.TextField(blank=True, default='', null=True)
     rate_per_hour = models.DecimalField(max_digits=5, decimal_places=2, null=False)
     status = models.CharField(choices=ParkingLotStatus.choices(), default=ParkingLotStatus.PENDING, max_length=10)

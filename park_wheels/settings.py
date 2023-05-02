@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # 'whitenoise.runserver_nostatic',
     'django.contrib.gis',
     'django.contrib.staticfiles',
+    'rest_framework_gis',
     'rest_framework',
     'rest_framework.authtoken',
     'webapp.apps.WebappConfig',
