@@ -23,9 +23,4 @@ class ParkingLotViewSet(ReadOnlyModelViewSet):
         query_set = self.get_queryset().filter(location__distance_lte=(location_serializer.point(), D(m=5000)))
         return Response({'result': self.serializer_class(query_set, many=True).data})
 
-    @action("POST", url_path='add-slots', detail=True)
-    def addSlot(self):
-        slotSerializer = SlotSerializer(self.request.data, many=True)
-        slotSerializer.is_valid(raise_exception=True)
-        slotSerializer.save()
-        return Response(status=200, data='successful')
+
