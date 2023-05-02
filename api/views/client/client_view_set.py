@@ -13,7 +13,7 @@ from ...permissions import IsClient
 from ...serializers import UserSerializer, ChangePasswordSerializer
 
 
-class ClientViewSet(GenericViewSet, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin):
+class ClientViewSet(GenericViewSet):
     authentication_classes = [BearerTokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
@@ -22,12 +22,12 @@ class ClientViewSet(GenericViewSet, UpdateModelMixin, RetrieveModelMixin, Destro
     def get_queryset(self):
         return self.request.user
 
-    @action('GET', detail=False)
+    @action(methods=['GET'], url_path='user', detail=False)
     def user(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action('PUT', url_path='update', detail=False)
+    @action(methods=['PUT'], url_path='update', detail=False)
     def updateUser(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
