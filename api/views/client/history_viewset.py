@@ -1,4 +1,5 @@
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from django.db.models import QuerySet
 
@@ -18,3 +19,8 @@ class HistoryViewSet(ReadOnlyModelViewSet):
         return self.queryset.filter(user_id=self.request.user.pk,
                                     status__in=[BookingStatus.CANCELLED.value, BookingStatus.COMPLETED.value]).order_by(
             '-booked_time', 'status')
+
+    def list(self, request, *args, **kwargs):
+        return Response({
+            'result': self.get_queryset()
+        })

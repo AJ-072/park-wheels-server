@@ -23,3 +23,8 @@ class ParkingLotViewSet(ReadOnlyModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        return Response({
+            'result': self.get_queryset()
+        })

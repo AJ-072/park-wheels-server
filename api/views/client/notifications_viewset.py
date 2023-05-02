@@ -1,4 +1,5 @@
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from api.authentication import BearerTokenAuthentication
@@ -15,3 +16,8 @@ class NotificationsViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(owner_id=self.request.user.pk)
+
+    def list(self, request, *args, **kwargs):
+        return Response({
+            'result': self.get_queryset()
+        })

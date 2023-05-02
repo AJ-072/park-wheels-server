@@ -20,4 +20,4 @@ class ParkingLotViewSet(ReadOnlyModelViewSet):
         location_serializer = LocationSerializer(data=request.query_params)
         location_serializer.is_valid(raise_exception=True)
         query_set = self.get_queryset().filter(location__distance_lte=(location_serializer.point(), D(m=5000)))
-        return Response(self.serializer_class(query_set, many=True).data)
+        return Response({'result': self.serializer_class(query_set, many=True).data})

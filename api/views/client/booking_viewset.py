@@ -24,3 +24,8 @@ class BookingViewSet(ReadOnlyModelViewSet):
                                                 BookingStatus.BOOKED.value,
                                                 BookingStatus.PARKED.value]).order_by(
             '-booked_time', 'status')
+
+    def list(self, request, *args, **kwargs):
+        return Response({
+            'result': self.get_queryset()
+        })
