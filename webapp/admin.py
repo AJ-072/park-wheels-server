@@ -11,7 +11,7 @@ from .models import ParkingLot, User, Slot, Booking, Notifications
 
 @admin.register(Booking)
 class BookAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('lot', 'slot', 'booked_time', 'status')
 
 
 @admin.register(User)

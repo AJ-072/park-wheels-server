@@ -13,7 +13,7 @@ class BookingView(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     queryset: QuerySet = Booking.objects.all()
-    serializer_class = BookingSerializer
+    serializer_class = ListBookingSerializer
     http_method_names = ["get", "post"]
 
     def get_queryset(self):
