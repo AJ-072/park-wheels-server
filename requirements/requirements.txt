@@ -19,6 +19,6 @@ psycopg2-binary==2.9.5
 PyJWT==2.6.0
 pytz==2023.2
 six==1.16.0
-sqlparse==0.4.3
+sqlparse==0.4.4
 vine==5.0.0
 wcwidth==0.2.6
