@@ -1,3 +1,4 @@
+from django.contrib.gis.geos import Point
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoModelSerializer, ModelSerializer
 from webapp.models.parking_lot import ParkingLot, LotImage
@@ -12,6 +13,7 @@ class LotImageSerializer(ModelSerializer):
 class ParkingLotSerializer(GeoModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     images = serializers.SerializerMethodField()
+    distance = serializers.SerializerMethodField()
 
     class Meta:
         model = ParkingLot
@@ -30,5 +32,12 @@ class ParkingLotSerializer(GeoModelSerializer):
         return lot
 
     def get_images(self, obj):
-        imagesSerializer = LotImageSerializer(LotImage.objects.filter(lot=obj),many=True)
+        imagesSerializer = LotImageSerializer(LotImage.objects.filter(lot=obj), many=True)
         return [data['image'] for data in imagesSerializer.data]
+
+    def get_distance(self, obj):
+        location = self.context.get('location', None)
+        if location:
+            return obj.location.distance(location).m
+        else:
+            return None
