@@ -38,6 +38,6 @@ class ParkingLotSerializer(GeoModelSerializer):
     def get_distance(self, obj):
         location = self.context.get('location', None)
         if location:
-            return obj.location.distance(location).m
+            return obj.location.distance(location)
         else:
             return None
