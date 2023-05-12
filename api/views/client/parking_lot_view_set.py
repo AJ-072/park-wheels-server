@@ -1,3 +1,4 @@
+from django.contrib.gis.db.models.functions import Distance
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
@@ -24,5 +25,6 @@ class ParkingLotViewSet(ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         location_serializer = LocationSerializer(data=request.query_params)
         location_serializer.is_valid(raise_exception=True)
-        query_set = self.get_queryset().filter(location__distance_lte=(location_serializer.point(), D(m=5000)))
+        query_set = self.get_queryset().annotate(
+            distance=Distance('location', location_serializer.point())).filter(distance__lte=5000)
         return Response({'result': self.serializer_class(query_set, many=True).data})
