@@ -29,9 +29,9 @@ class SlotAvailabilitySerializer(serializers.ModelSerializer):
         booking = self.context.get('booking')
         if booking is None:
             return {}
-        end_date_time = booking.end_date_time
+        end_date_time = booking.booked_time + booking.duration
         queryset = Booking.objects.filter(
-            Q(booked_time__range=[end_date_time, booking.booked_time]) | Q(
+            Q(booked_time__range=[booking.booked_time,end_date_time]) | Q(
                 booked_time__range=[booking.booked_time - F('duration'), end_date_time - F('duration')]),
             ~Q(status=BookingStatus.WAITING.value) | Q(created_at__gt=datetime.now(pytz.UTC) - F("timeout")) & Q(
                 status=BookingStatus.WAITING.value),

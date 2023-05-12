@@ -18,7 +18,9 @@ class ParkingLotViewSet(ModelViewSet):
         return self.queryset.filter(owner_id=self.request.user.pk)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,context={"request": self.request})
+        serializer = self.serializer_class(data=request.data, context={"request": self.request,
+                                                                       "images": self.request.FILES.getlist('images',
+                                                                                                            None)})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

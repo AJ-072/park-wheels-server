@@ -8,7 +8,7 @@ from webapp.config import BookingStatus
 class Booking(models.Model):
     lot = models.ForeignKey('ParkingLot', on_delete=models.CASCADE)
     cost = models.DecimalField(max_digits=5, null=False, decimal_places=2)
-    slot = models.ForeignKey("Slot", on_delete=models.CASCADE, null=True)
+    slot = models.ForeignKey("Slot", on_delete=models.CASCADE)
     timeout = models.DurationField(default=timedelta(minutes=5))
     booked_time = models.DateTimeField(null=False)
     arrived_time = models.DateTimeField(null=True, blank=True)

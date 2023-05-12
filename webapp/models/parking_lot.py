@@ -4,7 +4,6 @@ from webapp.config import ParkingLotStatus
 
 
 class ParkingLot(models.Model):
-    image = models.ImageField(upload_to='lot_images', blank=True, null=True)
     name = models.CharField(max_length=40, null=False)
     address = models.CharField(max_length=200, null=False)
     location = models.PointField(geography=True, default=Point(0.0, 0.0), srid=4326)
@@ -17,3 +16,11 @@ class ParkingLot(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+
+class LotImage(models.Model):
+    image = models.ImageField(upload_to='lot_images', blank=True, null=True)
+    lot = models.ForeignKey('ParkingLot', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.image}"
