@@ -22,8 +22,13 @@ class ReviewViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         print(self.get_lot_id())
-        serializer = self.serializer_class(data=request.data,
-                                           context={'lot_id': self.get_lot_id(), 'user': request.user})
+        serializer = self.serializer_class(data={
+            'lot': self.get_lot_id(),
+            'user': self.request.user.pk,
+            'title': request.data['title'],
+            'comment': request.data['comment'],
+            'rating': request.data['rating']
+        })
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'result': serializer.data})

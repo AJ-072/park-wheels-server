@@ -9,11 +9,3 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
-
-    def create(self, validated_data):
-        review = Review.objects.create(
-            lot=self.context['lot_id'],
-            user=self.context['user'],
-            **validated_data
-        )
-        return review
