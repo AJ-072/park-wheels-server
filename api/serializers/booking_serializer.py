@@ -20,8 +20,8 @@ class BookingWithSlotSerializer(serializers.ModelSerializer):
 #
 
 class BookingSerializer(serializers.ModelSerializer):
-    slot = SlotSerializer(read_only=True, required=True)
-    lot = ParkingLotSerializer(read_only=True, required=True)
+    slot = SlotSerializer(read_only=True)
+    lot = ParkingLotSerializer(read_only=True)
 
     class Meta:
         model = Booking
