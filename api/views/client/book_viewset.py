@@ -29,9 +29,9 @@ class BookViewSet(ModelViewSet):
     @custom_serializer(SlotBookingSerializer)
     def create(self, request, serializer: SlotBookingSerializer, parking_lot_pk=None):
         lot: ParkingLot = get_object_or_404(ParkingLot, id=parking_lot_pk)
-        booked_time = serializer.data.get('booking_time')
+        booked_time = serializer.validated_data['booking_time']
         duration = datetime.timedelta(
-            hours=serializer.data.get('duration'))
+            hours=serializer.validated_data['duration'])
         print(type(booked_time))
         end_date_time = booked_time + duration
         overlapping_bookings = Booking.objects.filter(
