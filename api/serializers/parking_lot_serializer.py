@@ -14,6 +14,8 @@ class ParkingLotSerializer(GeoModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     images = serializers.SerializerMethodField()
     # distance = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
+    review_count = serializers.SerializerMethodField()
 
     class Meta:
         model = ParkingLot
@@ -41,3 +43,9 @@ class ParkingLotSerializer(GeoModelSerializer):
     #         return obj.location.distance(location)
     #     else:
     #         return None
+
+    def get_rating(self, obj):
+        return obj.avg_rating
+
+    def get_review_count(self, obj):
+        return obj.reviews.count()

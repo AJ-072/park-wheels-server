@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import ParkingLot, User, Slot, Booking, Notifications
+from .models import ParkingLot, User, Slot, Booking, Notifications, Review
+from .models.parking_lot import LotImage
 
 
 # Register your models here.
@@ -24,11 +25,22 @@ class ParkingLotAdmin(admin.ModelAdmin):
     list_display = ('name', 'address', 'status', 'owner')
 
 
+@admin.register(LotImage)
+class LotImageAdmin(admin.ModelAdmin):
+    list_display = ('lot', 'image')
+
+
+@admin.register(Review)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ('rating', 'comment', 'lot', 'user')
+
+
 @admin.register(Notifications)
 class NotificationAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('message', 'user')
 
 
 @admin.register(Slot)
 class SlotAdmin(admin.ModelAdmin):
+    list_display = ('name', 'lot')
     pass

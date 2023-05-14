@@ -1,5 +1,7 @@
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
+from django.db.models import Avg
+
 from webapp.config import ParkingLotStatus
 
 
@@ -13,6 +15,12 @@ class ParkingLot(models.Model):
     owner = models.ForeignKey("User", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, auto_created=True)
     updated_at = models.DateTimeField(auto_now=True, auto_created=True)
+
+    @property
+    def avg_rating(self):
+        if hasattr(self, "_avg_rating"):
+            return self._avg_rating['rating__avg']
+        return self.reviews.aggregate(Avg('rating'))['rating__avg']
 
     def __str__(self):
         return f"{self.name}"
