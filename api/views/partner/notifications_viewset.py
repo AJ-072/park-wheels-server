@@ -5,14 +5,14 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from api.authentication import BearerTokenAuthentication
 from api.serializers import ParkingLotSerializer
 from api.serializers.notifications_serializer import NotificationsSerializer
-from webapp.models import Notifications
+from webapp.models import Notification
 
 
 class NotificationsViewSet(ReadOnlyModelViewSet):
     authentication_classes = [BearerTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    queryset = Notifications.objects.all()
+    queryset = Notification.objects.all()
     serializer_class = NotificationsSerializer
 
     def get_queryset(self):

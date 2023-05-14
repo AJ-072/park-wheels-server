@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Notifications(models.Model):
+class Notification(models.Model):
     message = models.TextField()
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     # image = models.CharField(null=True,max_length=)

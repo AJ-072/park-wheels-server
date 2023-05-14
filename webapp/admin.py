@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import ParkingLot, User, Slot, Booking, Notifications, Review
+from .models import ParkingLot, User, Slot, Booking, Notification, Review
 from .models.parking_lot import LotImage
 
 
@@ -35,7 +35,7 @@ class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('rating', 'comment', 'lot', 'user')
 
 
-@admin.register(Notifications)
+@admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('message', 'user')
 
