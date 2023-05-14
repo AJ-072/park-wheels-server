@@ -22,10 +22,23 @@ class BookingWithSlotSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     slot = SlotSerializer(read_only=True)
     lot = ParkingLotSerializer(read_only=True)
+    slot_id = serializers.PrimaryKeyRelatedField(source='slot', write_only=True, queryset=Slot.objects.all())
+    lot_id = serializers.PrimaryKeyRelatedField(source='lot', write_only=True, queryset=ParkingLot.objects.all())
 
     class Meta:
         model = Booking
         fields = '__all__'
+        # fields = (
+        #     'id',
+        #     'cost',
+        #     'slot',
+        #     'slot_id',
+        #     ''
+        # )
+        # extra_kwargs = {
+        #     'slot_id': {'source': 'slot', 'write_only': True},
+        #     'lot_id': {'source': 'lot', 'write_only': True},
+        # }
 
 
 class SlotBookingSerializer(serializers.Serializer):
