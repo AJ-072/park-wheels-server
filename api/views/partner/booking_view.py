@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 
 from api.authentication import BearerTokenAuthentication
 from webapp.models import Booking
-from api.serializers import BookingSerializer, ListBookingSerializer
+from api.serializers import BookingSerializer
 
 
 class BookingView(ModelViewSet):
@@ -13,7 +13,7 @@ class BookingView(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     queryset: QuerySet = Booking.objects.all()
-    serializer_class = ListBookingSerializer
+    serializer_class = BookingSerializer
     http_method_names = ["get", "post"]
 
     def get_queryset(self):
