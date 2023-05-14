@@ -21,6 +21,7 @@ class ReviewViewSet(ModelViewSet):
         return self.kwargs.get('parking_lot_pk')
 
     def create(self, request, *args, **kwargs):
+        print(self.get_lot_id())
         serializer = self.serializer_class(data=request.data,
                                            context={'lot_id': self.get_lot_id(), 'user': request.user})
         serializer.is_valid(raise_exception=True)
