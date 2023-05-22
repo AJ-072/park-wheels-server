@@ -13,6 +13,7 @@ from rest_framework.exceptions import ParseError
 
 from ...authentication import BearerTokenAuthentication
 from ...decorator import validate_field, not_none_field, custom_serializer
+from ...signals import bookingNotification
 
 
 class BookViewSet(ModelViewSet):
@@ -67,6 +68,7 @@ class BookViewSet(ModelViewSet):
                                                  partial=True)
         booking_serializer.is_valid(raise_exception=True)
         booking_serializer.save()
+        bookingNotification.send("booking", booking=self.get_object(), user=request.user)
         return Response(booking_serializer.data)
 
     @action(methods=['put'], detail=True, url_path="change-slot")
@@ -94,6 +96,7 @@ class BookViewSet(ModelViewSet):
                                                  partial=True)
         booking_serializer.is_valid(raise_exception=True)
         booking_serializer.save()
+        bookingNotification.send("booking", booking=self.get_object(), user=request.user)
         return Response(booking_serializer.data)
 
     def is_expired(self):

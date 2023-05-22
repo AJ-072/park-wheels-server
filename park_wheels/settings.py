@@ -13,6 +13,13 @@ import os
 from pathlib import Path
 import environ
 import rest_framework.schemas.coreapi
+import firebase_admin
+from firebase_admin import credentials
+
+# Initialize Firebase
+cred = credentials.Certificate('webapp/config/park-wheels-e2bdd-firebase-adminsdk-cjt6l-14d3e3d674.json')
+firebase_admin.initialize_app(cred)
+
 
 env = environ.Env()
 environ.Env.read_env()
