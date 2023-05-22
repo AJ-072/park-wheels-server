@@ -4,7 +4,7 @@ from django.utils import timezone
 from .. import signals
 from webapp.models.booking import Booking, BookingStatus
 from webapp.models import User, Notification
-from ..functions.push_notifications import send_push_notification
+from ..functions.push_notifications import send_notification
 
 
 @receiver(signals.bookingNotification)
@@ -18,23 +18,23 @@ def send_booing_notification(sender, booking: Booking, user: User, **kwargs):
             from_time=format_datetime(from_time),
             to_time=format_datetime(to_time)
         )
-        noti: Notification = Notification.objects.save(
+        noti: Notification = Notification.objects.create(
             title=title,
             message=body,
-            user=user.pk
+            user=user
         )
-        send_push_notification(user.device_token, noti.title, noti.message)
+        # send_notification(user.fcm_token, noti.title, noti.message)
     elif booking.status == BookingStatus.CANCELLED.value:
         title, body = booking_cancellation_notification(
             slot_id=booking.slot.name,
             parking_lot=booking.lot.name,
         )
-        noti: Notification = Notification.objects.save(
+        noti: Notification = Notification.objects.create(
             title=title,
             message=body,
-            user=user.pk
+            user=user
         )
-        send_push_notification(user.device_token, noti.title, noti.message)
+        # send_notification(user.fcm_token, noti.title, noti.message)
     elif booking.status == BookingStatus.PARKED.value:
         pass
     elif booking.status == BookingStatus.COMPLETED.value:

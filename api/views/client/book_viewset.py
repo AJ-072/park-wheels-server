@@ -88,9 +88,9 @@ class BookViewSet(ModelViewSet):
         booking_serializer.save()
         return Response(booking_serializer.data)
 
-    @validate_field(values=[BookingStatus.WAITING.value])
-    def destroy(self, request, parking_lot_pk=None, pk=None):
-        self.is_expired()
+    @validate_field(values=[BookingStatus.WAITING.value, BookingStatus.BOOKED.value])
+    @action(methods=['POST'], detail=True)
+    def cancel(self, request, parking_lot_pk=None, pk=None):
         booking_serializer = self.get_serializer(instance=self.get_object(),
                                                  data={"status": BookingStatus.CANCELLED.value},
                                                  partial=True)

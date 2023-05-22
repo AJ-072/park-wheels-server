@@ -44,6 +44,14 @@ class ClientViewSet(GenericViewSet):
             return Response(status=400, data={'message': 'incorrect password'})
         return Response(status=200, data={'message': 'password successfully updated'})
 
+    @action(detail=False, methods='PUT', url_path='update-fcm-token')
+    def updateFCMToken(self, request, user_type=None):
+        serializer = self.serializer_class(request.user, data={"fcm_token": request.data['fcm_token']}, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @action(['POST'], detail=False)
     def logout(self, request, user_type=None):
         request.user.auth_token.delete()

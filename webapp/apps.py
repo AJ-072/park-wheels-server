@@ -7,3 +7,4 @@ class WebappConfig(AppConfig):
 
     def ready(self):
         from api import receivers
+        from api.functions.push_notifications import send_notification

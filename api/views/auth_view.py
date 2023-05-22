@@ -60,11 +60,14 @@ class AuthViewSet(GenericViewSet):
             'token': token.key
         }, status=HTTP_201_CREATED)
 
-    @action(detail=False, methods=['GET'])
-    def send_noti(self, request, user_type=None):
-        from ..functions.push_notifications import send_push_notification
+    # @action(detail=False, methods=['GET'])
+    # def send_noti(self, request, user_type=None):
+    #     from ..functions.push_notifications import send_push_notification
+    #
+    #     send_push_notification(
+    #         token='fKXvOB0sCKyxQhgB7_LoUr:APA91bH-k0Yanph-DUr9hq4w2lmsWDjrPfoVdQcL1F_DGBDNTBMHeTNVY3YQmByho-rCmttrrL6SXIgZrYH56NKpQSmJPULhPLZhMroEEbG5xnDdf60RGqFp8EGy0bteYwaMQpcLOfEw',
+    #         title="title", body='body')
+    #     return Response("send successfully")
 
-        send_push_notification(
-            token='fKXvOB0sCKyxQhgB7_LoUr:APA91bH-k0Yanph-DUr9hq4w2lmsWDjrPfoVdQcL1F_DGBDNTBMHeTNVY3YQmByho-rCmttrrL6SXIgZrYH56NKpQSmJPULhPLZhMroEEbG5xnDdf60RGqFp8EGy0bteYwaMQpcLOfEw',
-            title="title", body='body')
-        return Response("send successfully")
+
+

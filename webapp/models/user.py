@@ -7,7 +7,7 @@ class User(AbstractUser):
     image = models.ImageField(upload_to='profile_images', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    device_token = models.CharField(max_length=100)
+    fcm_token = models.TextField()
 
     def __str__(self):
         return str(self.username)
