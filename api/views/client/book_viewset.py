@@ -63,8 +63,13 @@ class BookViewSet(ModelViewSet):
     @not_none_field("slot_id")
     def pay(self, request, parking_lot_pk=None, pk=None):
         self.is_expired()
+        if request.data['payment_id'] is None:
+            return Response(status=400, data={
+                "message": "payment_id can't be empty"
+            })
         booking_serializer = self.get_serializer(instance=self.get_object(),
-                                                 data={"status": BookingStatus.BOOKED.value},
+                                                 data={"status": BookingStatus.BOOKED.value,
+                                                       'payment_id': request.data['payment_id']},
                                                  partial=True)
         booking_serializer.is_valid(raise_exception=True)
         booking_serializer.save()
@@ -86,17 +91,6 @@ class BookViewSet(ModelViewSet):
                                                  partial=True)
         booking_serializer.is_valid(raise_exception=True)
         booking_serializer.save()
-        return Response(booking_serializer.data)
-
-    @validate_field(values=[BookingStatus.WAITING.value, BookingStatus.BOOKED.value])
-    @action(methods=['POST'], detail=True)
-    def cancel(self, request, parking_lot_pk=None, pk=None):
-        booking_serializer = self.get_serializer(instance=self.get_object(),
-                                                 data={"status": BookingStatus.CANCELLED.value},
-                                                 partial=True)
-        booking_serializer.is_valid(raise_exception=True)
-        booking_serializer.save()
-        bookingNotification.send("booking", booking=self.get_object(), user=request.user)
         return Response(booking_serializer.data)
 
     def is_expired(self):

@@ -1,9 +1,12 @@
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from django.db.models import QuerySet
 
 from api.authentication import BearerTokenAuthentication
+from api.decorator import validate_field
+from api.serializers.review_serializer import ReviewSerializer
 from webapp.models import Booking
 from api.serializers import BookingSerializer
 from webapp.config import BookingStatus
@@ -22,5 +25,15 @@ class HistoryViewSet(ReadOnlyModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return Response({
-            'result': self.serializer_class(self.get_queryset(),many=True).data
+            'result': self.serializer_class(self.get_queryset(), many=True).data
+        })
+
+    @validate_field(values=[BookingStatus.COMPLETED.value])
+    @action(detail=True, methods=['POST'])
+    def review(self, request, pk=None):
+        serializer = ReviewSerializer(request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(booking=self.get_object())
+        return Response({
+            'result': serializer.data
         })

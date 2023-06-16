@@ -13,6 +13,7 @@ class Booking(models.Model):
     booked_time = models.DateTimeField(null=False)
     arrived_time = models.DateTimeField(null=True, blank=True)
     take_away_time = models.DateTimeField(null=True, blank=True)
+    payment_id = models.CharField(max_length=50, null=True, default=None)
     status = models.CharField(choices=BookingStatus.choices(), default=BookingStatus.WAITING.value, max_length=10)
     duration = models.DurationField(default=timedelta(hours=1), null=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user")

@@ -2,7 +2,7 @@ import datetime
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
-from django.db.models import QuerySet
+from django.db.models import QuerySet, F, Q
 from webapp.models import Booking, ParkingLot, Slot
 from api.serializers import BookingSerializer, SlotIdSerializer, SlotBookingSerializer, SlotAvailabilitySerializer
 from webapp.config import BookingStatus, get_deltatime
@@ -29,13 +29,28 @@ class BookViewSet(ModelViewSet):
     @custom_serializer(SlotBookingSerializer)
     def create(self, request, serializer: SlotBookingSerializer, parking_lot_pk=None):
         lot: ParkingLot = get_object_or_404(ParkingLot, id=parking_lot_pk)
-        booking_serializer = self.get_serializer(data={'lot': lot.pk,
+        booked_time = serializer.validated_data['booking_time']
+        duration = datetime.timedelta(
+            hours=serializer.validated_data['duration'])
+        end_date_time = booked_time + duration
+        overlapping_bookings = self.get_queryset().filter(
+            Q(booked_time__range=[booked_time, end_date_time]) | Q(
+                booked_time__range=[booked_time - F('duration'), end_date_time - F('duration')]),
+            ~Q(status=BookingStatus.CANCELLED.value))
+
+        # exclude the slots that are already booked
+        unavailable_slots = [booking.slot.id for booking in overlapping_bookings]
+        available_slots = Slot.objects.exclude(id__in=unavailable_slots)
+        if available_slots.count() == 0:
+            return Response({'message': "no slots available"}, status=400)
+        booking_serializer = self.get_serializer(data={'lot_id': lot.pk,
                                                        'user': request.user.pk,
                                                        'created_by': request.user.pk,
-                                                       'booked_time': serializer.data.get('booking_time'),
+                                                       'booked_time': booked_time,
                                                        'status': BookingStatus.WAITING.value,
                                                        'duration': datetime.timedelta(
                                                            hours=serializer.data.get('duration')),
+                                                       'slot_id': available_slots[0].pk,
                                                        'cost': float(serializer.data.get(
                                                            'duration') * lot.rate_per_hour)})
         booking_serializer.is_valid(raise_exception=True)
@@ -71,15 +86,15 @@ class BookViewSet(ModelViewSet):
         booking_serializer.save()
         return Response(booking_serializer.data)
 
-    @validate_field(values=[BookingStatus.WAITING.value])
-    def destroy(self, request, parking_lot_pk=None, pk=None):
-        self.is_expired()
-        booking_serializer = self.get_serializer(instance=self.get_object(),
-                                                 data={"status": BookingStatus.CANCELLED.value},
-                                                 partial=True)
-        booking_serializer.is_valid(raise_exception=True)
-        booking_serializer.save()
-        return Response(booking_serializer.data)
+    # @validate_field(values=[BookingStatus.WAITING.value])
+    # def destroy(self, request, parking_lot_pk=None, pk=None):
+    #     self.is_expired()
+    #     booking_serializer = self.get_serializer(instance=self.get_object(),
+    #                                              data={"status": BookingStatus.CANCELLED.value},
+    #                                              partial=True)
+    #     booking_serializer.is_valid(raise_exception=True)
+    #     booking_serializer.save()
+    #     return Response(booking_serializer.data)
 
     def is_expired(self):
         booking = self.get_object()
