@@ -9,6 +9,6 @@ class Review(models.Model):
                                  validators=[MaxValueValidator(5), MinValueValidator(0)])
     title = models.CharField(max_length=100)
     comment = models.TextField(null=True, blank=True)
-    booking = models.OneToOneField(Booking, on_delete=models.CASCADE)
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE, related_name='review')
     created_at = models.DateTimeField(auto_now_add=True, auto_created=True)
     updated_at = models.DateTimeField(auto_now=True, auto_created=True)

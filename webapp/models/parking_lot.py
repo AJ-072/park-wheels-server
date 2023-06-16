@@ -20,7 +20,7 @@ class ParkingLot(models.Model):
     def avg_rating(self):
         if hasattr(self, "_avg_rating"):
             return self._avg_rating['rating__avg']
-        return self.reviews.aggregate(Avg('rating'))['rating__avg']
+        return self.booking_set.filter(review__isnull=False).aggregate(Avg('review__rating'))['review__rating__avg']
 
     def __str__(self):
         return f"{self.name}"

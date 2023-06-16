@@ -5,7 +5,7 @@ from .template_viewset import TemplateViewSet
 
 partner_router = DefaultRouter()
 partner_router.register(r'template', TemplateViewSet, basename='templates')
-partner_router.register(r'bookings', BookingView, basename="Bookings")
+partner_router.register(r'booking', BookingView, basename="Bookings")
 partner_router.register(r'parking-lots', ParkingLotViewSet, basename="lots")
 partner_router.register(r'notifications', NotificationsViewSet, basename="History")
 partner_router.register(r'', PartnerViewSet, basename="partner")

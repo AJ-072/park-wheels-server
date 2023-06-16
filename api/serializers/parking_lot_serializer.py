@@ -48,4 +48,4 @@ class ParkingLotSerializer(GeoModelSerializer):
         return obj.avg_rating
 
     def get_review_count(self, obj):
-        return obj.reviews.count()
+        return obj.booking_set.filter(review__isnull=False).count()
