@@ -32,7 +32,7 @@ class LotImageAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ('rating', 'comment', 'lot', 'user')
+    list_display = ('rating', 'comment')
 
 
 @admin.register(Notification)
