@@ -25,6 +25,10 @@ class AIViewset(GenericViewSet):
         arrivalSerializer.is_valid(raise_exception=True)
         slot = Slot.objects.filter(lot_id=arrivalSerializer.validated_data['lot_id'],
                                    name=arrivalSerializer.validated_data['name'])
+
+        if not slot:
+            return Response(status=400,data={"message":"slot not found"})
+
         now = datetime.now()
         booking = Booking.objects.filter(
             Q(booked_time__range=[now - F('duration'), now]),
@@ -41,6 +45,8 @@ class AIViewset(GenericViewSet):
         dispatchSerializer.is_valid(raise_exception=True)
         slot = Slot.objects.filter(lot_id=dispatchSerializer.validated_data['lot_id'],
                                    name=dispatchSerializer.validated_data['name'])
+        if not slot:
+            return Response(status=400,data={"message":"slot not found"})
         now = datetime.now()
         booking = Booking.objects.filter(
             Q(booked_time__range=[now - F('duration'), now]),
