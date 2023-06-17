@@ -44,33 +44,3 @@ class SlotViewSet(ModelViewSet):
         slotSerializer.is_valid(raise_exception=True)
         slotSerializer.save()
         return Response(status=200, data='successful')
-
-    @action("PUT", url_path="update-arrival-time", detail=True)
-    def updateArrivalTime(self, request, parking_lot_pk=None, pk=None):
-        arrivalSerializer = TimeSerializer(name=pk, lot_id=self.get_lot_id())
-        arrivalSerializer.is_valid(raise_exception=True)
-        slot = Slot.objects.filter(lot_id=self.get_lot_id(), name=arrivalSerializer.validated_data['name'])
-        now = datetime.datetime.now()
-        booking = Booking.objects.filter(
-            Q(booked_time__range=[now - F('duration'), now]),
-            Q(status=BookingStatus.BOOKED.value), lot_id=self.get_lot_id(), slot_id=slot.pk)
-        if not booking:
-            return Response(status=400, data={"message": "invalid booking"})
-        bookingSerializer = BookingSerializer(data=booking)
-        bookingSerializer.save(status=BookingStatus.PARKED.value, arrived_time=now)
-        return Response(status=200, data={'result': bookingSerializer.data})
-
-    @action("PUT", url_path="update-dispatch-time", detail=True)
-    def updateDispatchTime(self, request, parking_lot_pk=None, pk=None):
-        dispatchSerializer = TimeSerializer(name=pk, lot_id=self.get_lot_id())
-        dispatchSerializer.is_valid(raise_exception=True)
-        slot = Slot.objects.filter(lot_id=self.get_lot_id(), name=dispatchSerializer.validated_data['name'])
-        now = datetime.datetime.now()
-        booking = Booking.objects.filter(
-            Q(booked_time__range=[now - F('duration'), now]),
-            Q(status=BookingStatus.PARKED.value), lot_id=self.get_lot_id(), slot_id=slot.pk)
-        if not booking:
-            return Response(status=400, data={"message": "invalid booking"})
-        bookingSerializer = BookingSerializer(data=booking)
-        bookingSerializer.save(status=BookingStatus.COMPLETED.value, take_away_time=now)
-        return Response(status=200, data={'result': bookingSerializer.data})
