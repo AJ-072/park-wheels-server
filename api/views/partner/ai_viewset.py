@@ -19,13 +19,13 @@ class AIViewset(GenericViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
 
-    @action("PUT", url_path="update-arrival-time", detail=False)
+    @action(methods=["PUT"], url_path="update-arrival-time", detail=False)
     def updateArrivalTime(self, request):
-        arrivalSerializer = TimeSerializer(request.data)
+        arrivalSerializer = TimeSerializer(data=request.data)
         arrivalSerializer.is_valid(raise_exception=True)
         slot = Slot.objects.filter(lot_id=arrivalSerializer.validated_data['lot_id'],
                                    name=arrivalSerializer.validated_data['name'])
-        now = datetime.datetime.now()
+        now = datetime.now()
         booking = Booking.objects.filter(
             Q(booked_time__range=[now - F('duration'), now]),
             Q(status=BookingStatus.BOOKED.value), lot_id=arrivalSerializer.validated_data['lot_id'], slot_id=slot.pk)
@@ -35,13 +35,13 @@ class AIViewset(GenericViewSet):
         bookingSerializer.save(status=BookingStatus.PARKED.value, arrived_time=now)
         return Response(status=200, data={'result': bookingSerializer.data})
 
-    @action("PUT", url_path="update-dispatch-time", detail=False)
+    @action(methods=["PUT"], url_path="update-dispatch-time", detail=False)
     def updateDispatchTime(self, request):
-        dispatchSerializer = TimeSerializer(request.data)
+        dispatchSerializer = TimeSerializer(data=request.data)
         dispatchSerializer.is_valid(raise_exception=True)
         slot = Slot.objects.filter(lot_id=dispatchSerializer.validated_data['lot_id'],
                                    name=dispatchSerializer.validated_data['name'])
-        now = datetime.datetime.now()
+        now = datetime.now()
         booking = Booking.objects.filter(
             Q(booked_time__range=[now - F('duration'), now]),
             Q(status=BookingStatus.PARKED.value), lot_id=dispatchSerializer.validated_data['lot_id'], slot_id=slot.pk)
