@@ -33,13 +33,13 @@ class BookingViewSet(ReadOnlyModelViewSet):
             'result': self.serializer_class(self.get_queryset(), many=True).data
         })
 
-    @validate_field(values=[BookingStatus.BOOKED.value])
     @action(methods=['POST'], detail=True)
+    @validate_field(values=[BookingStatus.BOOKED.value])
     def cancel(self, request, parking_lot_pk=None, pk=None):
         booking_serializer = self.get_serializer(instance=self.get_object(),
                                                  data={"status": BookingStatus.CANCELLED.value},
                                                  partial=True)
         booking_serializer.is_valid(raise_exception=True)
-        booking_serializer.save()
-        bookingNotification.send("booking", booking=self.get_object(), user=self.request.user)
+        booking = booking_serializer.save()
+        bookingNotification.send("booking", booking=booking, user=self.request.user)
         return Response(booking_serializer.data)
