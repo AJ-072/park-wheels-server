@@ -38,7 +38,8 @@ class AIViewset(GenericViewSet):
             return Response(status=400, data={"message": "invalid booking"})
         bookingSerializer = BookingSerializer(data=BookingSerializer().to_representation(booking), partial=True)
         bookingSerializer.is_valid(raise_exception=True)
-        bookingSerializer.save(status=BookingStatus.PARKED.value, arrived_time=now)
+        bookingSerializer.save(status=BookingStatus.PARKED.value, arrived_time=now,
+                               lot_id=arrivalSerializer.validated_data['lot_id'], slot_id=slot.pk)
         return Response(status=200, data={'result': bookingSerializer.data})
 
     @action(methods=["PUT"], url_path="update-dispatch-time", detail=False)
@@ -58,5 +59,6 @@ class AIViewset(GenericViewSet):
             return Response(status=400, data={"message": "invalid booking"})
         bookingSerializer = BookingSerializer(data=BookingSerializer().to_representation(booking), partial=True)
         bookingSerializer.is_valid(raise_exception=True)
-        bookingSerializer.save(status=BookingStatus.COMPLETED.value, take_away_time=now, )
+        bookingSerializer.save(status=BookingStatus.COMPLETED.value, take_away_time=now,
+                               lot_id=dispatchSerializer.validated_data['lot_id'], slot_id=slot.pk)
         return Response(status=200, data={'result': bookingSerializer.data})
