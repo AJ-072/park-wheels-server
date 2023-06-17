@@ -14,6 +14,7 @@ from rest_framework.exceptions import ParseError
 from ...authentication import BearerTokenAuthentication
 from ...decorator import validate_field, not_none_field, custom_serializer
 
+
 class BookViewSet(ModelViewSet):
     authentication_classes = [BearerTokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -86,15 +87,12 @@ class BookViewSet(ModelViewSet):
         booking_serializer.save()
         return Response(booking_serializer.data)
 
-    # @validate_field(values=[BookingStatus.WAITING.value])
-    # def destroy(self, request, parking_lot_pk=None, pk=None):
-    #     self.is_expired()
-    #     booking_serializer = self.get_serializer(instance=self.get_object(),
-    #                                              data={"status": BookingStatus.CANCELLED.value},
-    #                                              partial=True)
-    #     booking_serializer.is_valid(raise_exception=True)
-    #     booking_serializer.save()
-    #     return Response(booking_serializer.data)
+    @validate_field(values=[BookingStatus.WAITING.value])
+    def destroy(self, request, parking_lot_pk=None, pk=None):
+        product = Booking.objects.get(pk=pk)
+        product.delete()
+        # Return success response
+        return Response({'message': 'Booking deleted successfully.'})
 
     def is_expired(self):
         booking = self.get_object()

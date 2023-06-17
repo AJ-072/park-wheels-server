@@ -93,6 +93,13 @@ class BookViewSet(ModelViewSet):
         booking_serializer.save()
         return Response(booking_serializer.data)
 
+    @validate_field(values=[BookingStatus.WAITING.value])
+    def destroy(self, request, parking_lot_pk=None, pk=None):
+        product = Booking.objects.get(pk=pk)
+        product.delete()
+        # Return success response
+        return Response({'message': 'Booking deleted successfully.'})
+
     def is_expired(self):
         booking = self.get_object()
         if booking.is_expired:
