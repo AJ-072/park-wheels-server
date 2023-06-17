@@ -24,7 +24,7 @@ class AIViewset(GenericViewSet):
         arrivalSerializer = TimeSerializer(data=request.data)
         arrivalSerializer.is_valid(raise_exception=True)
         slot = Slot.objects.filter(lot_id=arrivalSerializer.validated_data['lot_id'],
-                                   name=arrivalSerializer.validated_data['name'])
+                                   name=arrivalSerializer.validated_data['name']).first()
 
         if not slot:
             return Response(status=400,data={"message":"slot not found"})
@@ -44,7 +44,7 @@ class AIViewset(GenericViewSet):
         dispatchSerializer = TimeSerializer(data=request.data)
         dispatchSerializer.is_valid(raise_exception=True)
         slot = Slot.objects.filter(lot_id=dispatchSerializer.validated_data['lot_id'],
-                                   name=dispatchSerializer.validated_data['name'])
+                                   name=dispatchSerializer.validated_data['name']).first()
         if not slot:
             return Response(status=400,data={"message":"slot not found"})
         now = datetime.now()
