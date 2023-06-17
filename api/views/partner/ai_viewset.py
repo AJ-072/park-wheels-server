@@ -61,7 +61,7 @@ class AIViewset(GenericViewSet):
         if not booking:
             return Response(status=400, data={"message": "invalid booking"})
         data = {
-            'status': BookingStatus.PARKED.value,
+            'status': BookingStatus.COMPLETED.value,
             'take_away_time': now,
         }
         bookingSerializer = BookingSerializer(instance=booking, data=data, partial=True)
