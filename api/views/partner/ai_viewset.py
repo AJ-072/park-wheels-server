@@ -27,12 +27,13 @@ class AIViewset(GenericViewSet):
                                    name=arrivalSerializer.validated_data['name']).first()
 
         if not slot:
-            return Response(status=400,data={"message":"slot not found"})
+            return Response(status=400, data={"message": "slot not found"})
 
         now = datetime.now()
         booking = Booking.objects.filter(
             Q(booked_time__range=[now - F('duration'), now]),
-            Q(status=BookingStatus.BOOKED.value), lot_id=arrivalSerializer.validated_data['lot_id'], slot_id=slot.pk)
+            Q(status=BookingStatus.BOOKED.value), lot_id=arrivalSerializer.validated_data['lot_id'],
+            slot_id=slot.pk).first()
         if not booking:
             return Response(status=400, data={"message": "invalid booking"})
         bookingSerializer = BookingSerializer(data=booking)
@@ -47,11 +48,12 @@ class AIViewset(GenericViewSet):
         slot = Slot.objects.filter(lot_id=dispatchSerializer.validated_data['lot_id'],
                                    name=dispatchSerializer.validated_data['name']).first()
         if not slot:
-            return Response(status=400,data={"message":"slot not found"})
+            return Response(status=400, data={"message": "slot not found"})
         now = datetime.now()
         booking = Booking.objects.filter(
             Q(booked_time__range=[now - F('duration'), now]),
-            Q(status=BookingStatus.PARKED.value), lot_id=dispatchSerializer.validated_data['lot_id'], slot_id=slot.pk)
+            Q(status=BookingStatus.PARKED.value), lot_id=dispatchSerializer.validated_data['lot_id'],
+            slot_id=slot.pk).first()
         if not booking:
             return Response(status=400, data={"message": "invalid booking"})
         bookingSerializer = BookingSerializer(data=booking)
