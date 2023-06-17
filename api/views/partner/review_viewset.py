@@ -14,7 +14,7 @@ class ReviewViewSet(ReadOnlyModelViewSet):
     serializer_class = ReviewSerializer
 
     def get_queryset(self):
-        return super().get_queryset().filter(lot_id=self.get_lot_id())
+        return super().get_queryset().filter(booking__lot_id=self.get_lot_id())
 
     def get_lot_id(self):
         return self.kwargs.get('parking_lot_pk')

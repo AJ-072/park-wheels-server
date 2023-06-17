@@ -63,7 +63,7 @@ class BookViewSet(ModelViewSet):
     @not_none_field("slot_id")
     def pay(self, request, parking_lot_pk=None, pk=None):
         self.is_expired()
-        if request.data['payment_id'] is None:
+        if request.data.get('payment_id', None) is None:
             return Response(status=400, data={
                 "message": "payment_id can't be empty"
             })

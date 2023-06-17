@@ -1,3 +1,6 @@
+import datetime
+
+from django.db.models import Q, Sum
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -5,7 +8,8 @@ from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 
 from api.authentication import BearerTokenAuthentication
 from api.serializers import ParkingLotSerializer
-from webapp.models import ParkingLot
+from webapp.config import BookingStatus
+from webapp.models import ParkingLot, Booking
 
 
 class ParkingLotViewSet(ModelViewSet):
@@ -33,4 +37,18 @@ class ParkingLotViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         return Response({
             'result': self.serializer_class(self.get_queryset(), many=True).data
+        })
+
+    def retrieve(self, request, *args, **kwargs):
+        now = datetime.datetime.now()
+        monthly_bookings_set = self.get_object().booking_set.filter(
+            Q(booked_time__year=now.year, booked_time__month=now.month) & Q(
+                status__in=[BookingStatus.BOOKED.value, BookingStatus.PARKED.value, BookingStatus.COMPLETED.value]))
+        monthly_count = monthly_bookings_set.count()
+        monthly_revenue = monthly_bookings_set.aggregate(Sum('cost')).get('cost__sum', 0)
+        return Response(data={
+            "result": {
+                "monthly_count": monthly_count,
+                "monthly_revenue": monthly_revenue
+            }
         })

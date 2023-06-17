@@ -23,21 +23,19 @@ class BookingViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(user_id=self.request.user.pk,
-                                    status__in=[BookingStatus.WAITING.value,
-                                                BookingStatus.BOOKED.value,
-                                                BookingStatus.PARKED.value]).order_by(
+                                    status__in=[
+                                        BookingStatus.BOOKED.value,
+                                        BookingStatus.PARKED.value]).order_by(
             '-booked_time', 'status')
 
     def list(self, request, *args, **kwargs):
         return Response({
-            'result': self.serializer_class(self.get_queryset(),many=True).data
+            'result': self.serializer_class(self.get_queryset(), many=True).data
         })
 
     @validate_field(values=[BookingStatus.BOOKED.value])
     @action(methods=['POST'], detail=True)
     def cancel(self, request, parking_lot_pk=None, pk=None):
-        if self.get_object().paymeny_id is None:
-            return Response(status=403)
         booking_serializer = self.get_serializer(instance=self.get_object(),
                                                  data={"status": BookingStatus.CANCELLED.value},
                                                  partial=True)
