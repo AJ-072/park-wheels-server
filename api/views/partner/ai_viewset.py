@@ -60,8 +60,11 @@ class AIViewset(GenericViewSet):
             slot_id=slot.pk).first()
         if not booking:
             return Response(status=400, data={"message": "invalid booking"})
-        bookingSerializer = BookingSerializer()
+        data = {
+            'status': BookingStatus.PARKED.value,
+            'take_away_time': now,
+        }
+        bookingSerializer = BookingSerializer(instance=booking, data=data, partial=True)
         bookingSerializer.is_valid(raise_exception=True)
-        bookingSerializer.update(status=BookingStatus.COMPLETED.value, take_away_time=now,
-                               lot_id=dispatchSerializer.validated_data['lot_id'], slot_id=slot.pk)
+        bookingSerializer.save()
         return Response(status=200, data={'result': bookingSerializer.data})
