@@ -3,16 +3,14 @@ from datetime import datetime, timedelta
 import pytz
 from rest_framework import serializers
 
-import api.serializers
+from api.serializers.parking_lot_serializer import ParkingLotSerializer
 from webapp.models import Slot, Booking, ParkingLot
-from webapp.config import get_slot_status, SlotStatus, BookingStatus
-from django.shortcuts import get_object_or_404
-from django.db.models import Q, Case, When, Value, F
-from django.db import models
-from rest_framework.validators import UniqueValidator
+from webapp.config import BookingStatus
+from django.db.models import Q,F
 
 
 class SlotSerializer(serializers.ModelSerializer):
+    lot = ParkingLotSerializer(read_only=True)
     lot_id = serializers.PrimaryKeyRelatedField(source='lot', write_only=True, queryset=ParkingLot.objects.all())
 
     class Meta:

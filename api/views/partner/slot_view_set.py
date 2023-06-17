@@ -4,7 +4,7 @@ from django.db.models import Q, F
 from rest_framework.decorators import action, permission_classes as permission
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from webapp.config import BookingStatus
 from webapp.models import Slot, Booking
@@ -15,7 +15,7 @@ from django.shortcuts import get_object_or_404
 from ...serializers.slot_serializer import TimeSerializer
 
 
-class SlotViewSet(ReadOnlyModelViewSet):
+class SlotViewSet(ModelViewSet):
     authentication_classes = [BearerTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -38,16 +38,16 @@ class SlotViewSet(ReadOnlyModelViewSet):
             'result': self.serializer_class(self.get_queryset(), many=True).data
         })
 
-    @action("POST", url_path='add', detail=False)
-    def addSlot(self):
-        slotSerializer = SlotSerializer(self.request.data, many=True, lot_id=self.get_lot_id())
+    def create(self, request, *args, **kwargs):
+        slotSerializer = SlotSerializer(data=[dict(item, lot_id=self.get_lot_id()) for item in self.request.data],
+                                        many=True)
         slotSerializer.is_valid(raise_exception=True)
         slotSerializer.save()
         return Response(status=200, data='successful')
 
-    @action("PUT", url_path="update-arrival-time", detail=False)
-    def updateArrivalTime(self, request):
-        arrivalSerializer = TimeSerializer(self.request.data, lot_id=self.get_lot_id())
+    @action("PUT", url_path="update-arrival-time", detail=True)
+    def updateArrivalTime(self, request, parking_lot_pk=None, pk=None):
+        arrivalSerializer = TimeSerializer(name=pk, lot_id=self.get_lot_id())
         arrivalSerializer.is_valid(raise_exception=True)
         slot = Slot.objects.filter(lot_id=self.get_lot_id(), name=arrivalSerializer.validated_data['name'])
         now = datetime.datetime.now()
@@ -60,9 +60,9 @@ class SlotViewSet(ReadOnlyModelViewSet):
         bookingSerializer.save(status=BookingStatus.PARKED.value, arrived_time=now)
         return Response(status=200, data={'result': bookingSerializer.data})
 
-    @action("PUT", url_path="update-dispatch-time", detail=False)
-    def updateDispatchTime(self, request):
-        dispatchSerializer = TimeSerializer(self.request.data, lot_id=self.get_lot_id())
+    @action("PUT", url_path="update-dispatch-time", detail=True)
+    def updateDispatchTime(self, request, parking_lot_pk=None, pk=None):
+        dispatchSerializer = TimeSerializer(name=pk, lot_id=self.get_lot_id())
         dispatchSerializer.is_valid(raise_exception=True)
         slot = Slot.objects.filter(lot_id=self.get_lot_id(), name=dispatchSerializer.validated_data['name'])
         now = datetime.datetime.now()
