@@ -41,5 +41,5 @@ class BookingViewSet(ReadOnlyModelViewSet):
                                                  partial=True)
         booking_serializer.is_valid(raise_exception=True)
         booking_serializer.save()
-        bookingNotification.send("booking", booking=self.get_object(), user=request.user)
+        bookingNotification.send("booking", booking=self.get_object(), user=self.request.user)
         return Response(booking_serializer.data)
