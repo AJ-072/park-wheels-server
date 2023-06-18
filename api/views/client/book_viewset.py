@@ -34,7 +34,7 @@ class BookViewSet(ModelViewSet):
         duration = datetime.timedelta(
             hours=serializer.validated_data['duration'])
         end_date_time = booked_time + duration
-        overlapping_bookings = Booking.objects.filter(
+        overlapping_bookings = self.get_queryset().filter(
             Q(booked_time__range=[booked_time, end_date_time]) | Q(
                 booked_time__range=[booked_time - F('duration'), end_date_time - F('duration')]),
             ~Q(status=BookingStatus.CANCELLED.value))

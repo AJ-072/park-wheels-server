@@ -47,8 +47,6 @@ class ParkingLotViewSet(ModelViewSet):
         monthly_count = monthly_bookings_set.count()
         monthly_revenue = monthly_bookings_set.aggregate(Sum('cost')).get('cost__sum', 0)
         return Response(data={
-            "result": {
                 "monthly_count": monthly_count,
                 "monthly_revenue": monthly_revenue
-            }
         })
