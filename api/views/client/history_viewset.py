@@ -31,7 +31,8 @@ class HistoryViewSet(ReadOnlyModelViewSet):
     @validate_field(values=[BookingStatus.COMPLETED.value])
     @action(detail=True, methods=['POST'])
     def review(self, request, pk=None):
-        serializer = ReviewSerializer(data=request.data, booking=self.get_object())
+        serializer = ReviewSerializer(data=request.data)
+        serializer.data['booking'] = self.get_object()
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({
