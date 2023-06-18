@@ -32,7 +32,7 @@ class HistoryViewSet(ReadOnlyModelViewSet):
     @action(detail=True, methods=['POST'])
     def review(self, request, pk=None):
         data = request.data.copy()
-        data['booking'] = self.get_object()
+        data['booking'] = pk
         serializer = ReviewSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
