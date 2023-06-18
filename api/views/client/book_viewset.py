@@ -34,14 +34,15 @@ class BookViewSet(ModelViewSet):
         duration = datetime.timedelta(
             hours=serializer.validated_data['duration'])
         end_date_time = booked_time + duration
-        overlapping_bookings = self.get_queryset().filter(
-            Q(booked_time__range=[booked_time, end_date_time]) | Q(
-                booked_time__range=[booked_time - F('duration'), end_date_time - F('duration')]),
-            ~Q(status=BookingStatus.CANCELLED.value))
+        overlapping_bookings = Booking.objects.filter(Q(lot_id=parking_lot_pk),
+                                                      Q(booked_time__range=[booked_time, end_date_time]) | Q(
+                                                          booked_time__range=[booked_time - F('duration'),
+                                                                              end_date_time - F('duration')]),
+                                                      ~Q(status=BookingStatus.CANCELLED.value))
 
         # exclude the slots that are already booked
         unavailable_slots = [booking.slot.id for booking in overlapping_bookings]
-        available_slots = Slot.objects.exclude(id__in=unavailable_slots)
+        available_slots = Slot.objects.filter(lot_id=parking_lot_pk).exclude(id__in=unavailable_slots)
         if available_slots.count() == 0:
             return Response({'message': "no slots available"}, status=400)
         booking_serializer = self.get_serializer(data={'lot_id': lot.pk,

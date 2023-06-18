@@ -16,7 +16,7 @@ class Booking(models.Model):
     payment_id = models.CharField(max_length=50, null=True, default=None)
     status = models.CharField(choices=BookingStatus.choices(), default=BookingStatus.WAITING.value, max_length=10)
     duration = models.DurationField(default=timedelta(hours=1), null=False)
-    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user")
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user", null=True, blank=True)
     created_by = models.ForeignKey("User", on_delete=models.CASCADE, related_name="created_by")
     created_at = models.DateTimeField(auto_now_add=True, auto_created=True)
     updated_at = models.DateTimeField(auto_now=True, auto_created=True)
