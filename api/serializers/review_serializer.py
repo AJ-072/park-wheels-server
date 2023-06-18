@@ -6,7 +6,7 @@ from webapp.models import Review
 class ReviewSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
-        booking = self.context['view'].get_object()
+        booking = self.context['booking']
         data['booking'] = booking
         return data
 

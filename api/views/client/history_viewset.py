@@ -18,6 +18,9 @@ class HistoryViewSet(ReadOnlyModelViewSet):
     queryset: QuerySet = Booking.objects.all()
     serializer_class = BookingSerializer
 
+    def get_serializer_context(self):
+        super().get_serializer_context()['booking'] = self.get_object()
+
     def get_queryset(self):
         return self.queryset.filter(user_id=self.request.user.pk,
                                     status__in=[BookingStatus.CANCELLED.value, BookingStatus.COMPLETED.value]).order_by(
