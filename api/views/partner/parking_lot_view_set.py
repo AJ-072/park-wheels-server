@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.db.models import Q, Sum
 from rest_framework.decorators import action
@@ -22,7 +23,13 @@ class ParkingLotViewSet(ModelViewSet):
         return self.queryset.filter(owner_id=self.request.user.pk)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={"request": self.request,
+        data = request.data
+        data['location'] = {
+            "coordinates": [
+                float(data['long']), float(data['lat'])
+            ], "type": "point"
+        }
+        serializer = self.serializer_class(data=data, context={"request": self.request,
                                                                        "images": self.request.FILES.getlist('images',
                                                                                                             None)})
         serializer.is_valid(raise_exception=True)
@@ -47,6 +54,6 @@ class ParkingLotViewSet(ModelViewSet):
         monthly_count = monthly_bookings_set.count()
         monthly_revenue = monthly_bookings_set.aggregate(Sum('cost')).get('cost__sum', 0)
         return Response(data={
-                "monthly_count": monthly_count,
-                "monthly_revenue": monthly_revenue
+            "monthly_count": monthly_count,
+            "monthly_revenue": monthly_revenue
         })

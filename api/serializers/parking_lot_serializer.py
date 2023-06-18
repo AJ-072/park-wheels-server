@@ -4,6 +4,7 @@ from rest_framework_gis.serializers import GeoModelSerializer, ModelSerializer
 from webapp.models.parking_lot import ParkingLot, LotImage
 
 
+
 class LotImageSerializer(ModelSerializer):
     class Meta:
         model = LotImage
