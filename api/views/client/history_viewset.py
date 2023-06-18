@@ -18,11 +18,6 @@ class HistoryViewSet(ReadOnlyModelViewSet):
     queryset: QuerySet = Booking.objects.all()
     serializer_class = BookingSerializer
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['booking'] = self.get_object()
-        return context
-
     def get_queryset(self):
         return self.queryset.filter(user_id=self.request.user.pk,
                                     status__in=[BookingStatus.CANCELLED.value, BookingStatus.COMPLETED.value]).order_by(
@@ -36,7 +31,9 @@ class HistoryViewSet(ReadOnlyModelViewSet):
     @validate_field(values=[BookingStatus.COMPLETED.value])
     @action(detail=True, methods=['POST'])
     def review(self, request, pk=None):
-        serializer = ReviewSerializer(data=request.data)
+        data = request.data
+        data['booking_id'] = pk
+        serializer = ReviewSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({

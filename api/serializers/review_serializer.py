@@ -5,11 +5,6 @@ from webapp.models import Review
 
 class ReviewSerializer(serializers.ModelSerializer):
 
-    def validate(self, data):
-        booking = self.context['booking']
-        data['booking'] = booking
-        return data
-
     class Meta:
         model = Review
         fields = '__all__'
