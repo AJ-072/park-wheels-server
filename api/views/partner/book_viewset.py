@@ -45,7 +45,6 @@ class BookViewSet(ModelViewSet):
         if available_slots.count() == 0:
             return Response({'message': "no slots available"}, status=400)
         booking_serializer = self.get_serializer(data={'lot_id': lot.pk,
-                                                       'user': request.user.pk,
                                                        'created_by': request.user.pk,
                                                        'booked_time': booked_time,
                                                        'status': BookingStatus.WAITING.value,
