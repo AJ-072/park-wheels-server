@@ -36,6 +36,4 @@ class HistoryViewSet(ReadOnlyModelViewSet):
         serializer = ReviewSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({
-            'result': serializer.data
-        })
+        return Response(serializer.data)
