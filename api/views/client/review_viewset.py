@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from api.authentication import BearerTokenAuthentication
-from api.serializers.review_serializer import ReviewSerializer
+from api.serializers.review_serializer import ReviewSerializer, ReviewWithUserSerializer
 from webapp.models import Review
 
 
@@ -12,7 +12,7 @@ class ReviewViewSet(ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
     queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
+    serializer_class = ReviewWithUserSerializer
 
     def get_queryset(self):
         return super().get_queryset().filter(booking__lot_id=self.get_lot_id())
