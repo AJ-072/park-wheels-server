@@ -19,7 +19,9 @@ class HistoryViewSet(ReadOnlyModelViewSet):
     serializer_class = BookingSerializer
 
     def get_serializer_context(self):
-        super().get_serializer_context()['booking'] = self.get_object()
+        context = super().get_serializer_context()
+        context['booking'] = self.get_object()
+        return context
 
     def get_queryset(self):
         return self.queryset.filter(user_id=self.request.user.pk,
