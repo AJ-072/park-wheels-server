@@ -83,7 +83,7 @@ class BookViewSet(ModelViewSet):
         self.is_expired()
         slot_serializer = SlotAvailabilitySerializer(Slot.objects.get(id=serializer.validated_data['slot_id']),
                                                      context={"booking": self.get_object()})
-        slot_serializer.is_valid()
+        slot_serializer.is_valid(raise_exception=True)
         if ~slot_serializer.available:
             return Response({'message': "can't select slot : " + slot_serializer.validated_data['name']}, status=400)
         booking_serializer = self.get_serializer(instance=self.get_object(),
